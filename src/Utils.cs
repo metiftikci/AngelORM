@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -38,6 +39,32 @@ namespace AngelORM
             }
 
             return columns;
+        }
+
+        public List<T> ConvertDataTableToList<T>(DataTable dataTable)
+            where T : class, new()
+        {
+            Table table = GetTable<T>();
+
+            Type type = typeof(T);
+
+            List<T> list = new List<T>();
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                T model = new T();
+
+                foreach (Column column in table.Columns)
+                {
+                    object value = row[column.Alias];
+
+                    type.GetProperty(column.Alias).SetValue(model, value, null);
+                }
+
+                list.Add(model);
+            }
+
+            return list;
         }
     }
 }
