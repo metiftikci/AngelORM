@@ -30,3 +30,5 @@ int affectedRows = engine.Update(model);
 // DELETE
 int affectedRows = engine.Delete(model);
 ```
+
+You can look at [tests](AngelORM/blob/master/test/AngelORMEngineTests.cs) to see real examples.
