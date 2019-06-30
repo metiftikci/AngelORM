@@ -10,3 +10,23 @@ Basic and lightweight mssql operations framework.
 - [x] Make DataTable to List<T> adapter.
 - [ ] Add where feature to select query creator method.
 - [ ] Implement transaction.
+
+## Usage
+
+Easy to use. You can do anything with one line :blush:
+
+```csharp
+AngelORMEngine engine = new AngelORMEngine(connectionString);
+
+// SELECT
+List<User> users = engine.ToList<User>();
+
+// INSERT
+engine.Insert(model);
+
+// UPDATE
+int affectedRows = engine.Update(model);
+
+// DELETE
+int affectedRows = engine.Delete(model);
+```
