@@ -6,11 +6,11 @@ using Xunit;
 
 namespace AngelORM.Tests
 {
-    public class AngelORMEngineTests
+    public class EngineTests
     {
         private const string CS = "Server=MONSTER\\MET; Database=AngelORM; Integrated Security=True;";
 
-        private AngelORMEngine _engine = new AngelORMEngine(CS);
+        private Engine _engine = new Engine(CS);
 
         [Fact]
         public void ToListTest()

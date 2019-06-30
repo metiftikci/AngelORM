@@ -5,14 +5,14 @@ using System.Data.SqlClient;
 
 namespace AngelORM
 {
-    public class AngelORMEngine
+    public class Engine
     {
         private string _connectionString;
         private QueryCreator _queryCreator;
         private ParameterCreator _parameterCreator;
         private Utils _utils;
 
-        public AngelORMEngine(string connectionString)
+        public Engine(string connectionString)
         {
             if (connectionString == null) throw new ArgumentNullException(connectionString);
 
