@@ -58,6 +58,8 @@ namespace AngelORM
                 {
                     object value = row[column.Alias];
 
+                    if (value is DBNull) continue;
+
                     type.GetProperty(column.Alias).SetValue(model, value, null);
                 }
 
