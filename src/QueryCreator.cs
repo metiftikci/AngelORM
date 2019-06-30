@@ -29,7 +29,7 @@ FROM {tableName}";
             Table table = _utils.GetTable<T>();
             Column primaryKeyColumn = table.Columns.FirstOrDefault(x => x.IsPrimaryKey);
 
-            List<string> columnNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"[{x.Name}] AS [{x.Alias}]").ToList();
+            List<string> columnNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"[{x.Name}]").ToList();
             List<string> parameterNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"@{x.Alias}").ToList();
 
             string columns = string.Join("\r\n   ,", columnNames);
