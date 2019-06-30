@@ -23,6 +23,7 @@ List<User> users = engine.ToList<User>();
 
 // INSERT
 engine.Insert(model);
+int insertedId = model.Id; // You can get insrted id after insert
 
 // UPDATE
 int affectedRows = engine.Update(model);
