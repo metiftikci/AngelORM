@@ -27,11 +27,11 @@ FROM [User]";
         public void CreateInsertQueryTest()
         {
             string query = @"INSERT INTO [User] (
-    [Name] AS [Name]
-   ,[Surname] AS [Surname]
-   ,[Username] AS [Username]
-   ,[Password] AS [Password]
-   ,[Email] AS [Email]
+    [Name]
+   ,[Surname]
+   ,[Username]
+   ,[Password]
+   ,[Email]
 )
 OUTPUT inserted.[Id]
 VALUES
