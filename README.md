@@ -18,12 +18,12 @@ Currently working on implement where feature with expression
 ```csharp
 // ========== GOAL ==========
 
-/* OK */ List<User> list = engine.Select().ToList();
-/* OK */ List<User> list = engine.Select().Where(x => x.Id > 5)
-/* OK */ List<User> list = engine.Select().Where(x => x.Id > minId && x.Role == "admin")
-List<User> list = engine.Select().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-List<User> list = engine.Select().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-List<User> list = engine.Select().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
+/* OK */ List<User> list = engine.Select<User>().ToList();
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5)
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin")
+List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
 ```
 
 ## Usage
