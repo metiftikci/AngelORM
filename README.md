@@ -16,7 +16,7 @@ Basic and lightweight mssql operations framework.
 Easy to use. You can do anything with one line :blush:
 
 ```csharp
-AngelORMEngine engine = new AngelORMEngine(connectionString);
+Engine engine = new Engine(connectionString);
 
 // SELECT
 List<User> users = engine.ToList<User>();
@@ -32,4 +32,4 @@ int affectedRows = engine.Update(model);
 int affectedRows = engine.Delete(model);
 ```
 
-You can look at [tests](test/AngelORMEngineTests.cs) to see real examples.
+You can look at [tests](test/EngineTests.cs) to see real examples.
