@@ -22,6 +22,20 @@ namespace AngelORM.Tests
         }
 
         [Fact]
+        public void SelectWhereTest()
+        {
+            List<User> users = _engine.Select<User>().Where(x => x.Name == "Muhammed");
+
+            Assert.Equal(1, users.Count);
+            Assert.Equal("muhammed", users[0].Username);
+            Assert.Equal("jaqra@hotmail.com", users[0].Email);
+
+            users = _engine.Select<User>().Where(x => x.Id > 5 && x.Id < 16);
+
+            Assert.Equal(5, users.Count);
+        }
+
+        [Fact]
         public void InsertTest()
         {
             User user = new User();
