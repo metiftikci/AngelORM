@@ -11,6 +11,21 @@ Basic and lightweight mssql operations framework.
 - [ ] Add where feature to select query creator method.
 - [ ] Implement transaction.
 
+## Work On
+
+Currently working on implement where feature with expression
+
+```csharp
+// ========== GOAL ==========
+
+List<User> list = engine.Select().ToList();
+List<User> list = engine.Select().Where(x => x.Id > 5).ToList();
+List<User> list = engine.Select().Where(x => x.Id > minId).ToList();
+List<User> list = engine.Select().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+List<User> list = engine.Select().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+List<User> list = engine.Select().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
+```
+
 ## Usage
 
 Easy to use. You can do anything with one line :blush:
