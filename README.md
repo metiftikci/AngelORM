@@ -18,9 +18,9 @@ Currently working on implement where feature with expression
 ```csharp
 // ========== GOAL ==========
 
-List<User> list = engine.Select().ToList();
-List<User> list = engine.Select().Where(x => x.Id > 5).ToList();
-List<User> list = engine.Select().Where(x => x.Id > minId).ToList();
+/* OK */ List<User> list = engine.Select().ToList();
+/* OK */ List<User> list = engine.Select().Where(x => x.Id > 5)
+/* OK */ List<User> list = engine.Select().Where(x => x.Id > minId && x.Role == "admin")
 List<User> list = engine.Select().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
 List<User> list = engine.Select().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
 List<User> list = engine.Select().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
@@ -35,6 +35,9 @@ Engine engine = new Engine(connectionString);
 
 // SELECT
 List<User> users = engine.ToList<User>();
+
+// SELECT WITH CONDITIONS **[NEW]**
+List<User> users = engine.ToList<User>(x => x.Id > 5 && x.Role == "admin" && x.CreatedDate < dateTime && x.Active == true);
 
 // INSERT
 engine.Insert(model);
