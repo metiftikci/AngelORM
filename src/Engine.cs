@@ -22,20 +22,10 @@ namespace AngelORM
             _utils = new Utils();
         }
 
-        public DataTable ToDataTable<T>()
-            where T : class
-        {
-            string query = _queryCreator.CreateSelectQuery<T>();
-
-            return ExecuteDataTable(query);
-        }
-
-        public List<T> ToList<T>()
+        public SelectOperation<T> Select<T>()
             where T : class, new()
         {
-            DataTable dataTable = ToDataTable<T>();
-
-            return _utils.ConvertDataTableToList<T>(dataTable);
+            return new SelectOperation<T>(this);
         }
 
         /// <exception cref="ArgumentNullException"></exception>
