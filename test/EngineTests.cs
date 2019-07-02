@@ -13,9 +13,9 @@ namespace AngelORM.Tests
         private Engine _engine = new Engine(CS);
 
         [Fact]
-        public void ToListTest()
+        public void SelectTest()
         {
-            List<User> users = _engine.ToList<User>();
+            List<User> users = _engine.Select<User>().ToList();
 
             Assert.Equal("muhammed", users[0].Username);
             Assert.Equal("jaqra@hotmail.com", users[0].Email);
@@ -52,14 +52,14 @@ namespace AngelORM.Tests
         [Fact]
         public void UpdateTest()
         {
-            List<User> users = _engine.ToList<User>();
+            List<User> users = _engine.Select<User>().ToList();
             User lastUser = users.Last();
 
             lastUser.Username = Guid.NewGuid().ToString();
 
             _engine.Update(lastUser);
             
-            List<User> users2 = _engine.ToList<User>();
+            List<User> users2 = _engine.Select<User>().ToList();
             User lastUser2 = users2.Last();
 
             Assert.Equal(lastUser.Username, lastUser2.Username);
@@ -68,12 +68,12 @@ namespace AngelORM.Tests
         [Fact]
         public void DeleteTest()
         {
-            List<User> users = _engine.ToList<User>();
+            List<User> users = _engine.Select<User>().ToList();
             User lastUser = users.Last();
 
             _engine.Delete(lastUser);
             
-            List<User> users2 = _engine.ToList<User>();
+            List<User> users2 = _engine.Select<User>().ToList();
             User lastUser2 = users2.Last();
 
             Assert.NotEqual(lastUser.Id, lastUser2.Id);
