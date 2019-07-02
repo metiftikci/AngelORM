@@ -12,6 +12,8 @@ namespace AngelORM
         private Utils _utils;
         private string _selectQuery;
 
+        private string _where;
+
         public SelectOperation(Engine engine)
         {
             if (engine == null) throw new ArgumentNullException(nameof(engine));
@@ -25,23 +27,27 @@ namespace AngelORM
 
         public List<T> ToList()
         {
-            DataTable dataTable = _engine.ExecuteDataTable(_selectQuery);
+            DataTable dataTable = _engine.ExecuteDataTable(_selectQuery + _where);
 
             return _utils.ConvertDataTableToList<T>(dataTable);
         }
 
-        public List<T> Where(Expression<Func<T, bool>> predicate)
+        public SelectOperation<T> Where(Expression<Func<T, bool>> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            if (_where != null) throw new InvalidOperationException("The 'Where' method already used.");
 
             ExpressionResolver expResolver = new ExpressionResolver();
             
-            string query = _selectQuery + @"
+            _where = @"
 WHERE " + expResolver.Resolve<T>(predicate);
 
-            DataTable dataTable = _engine.ExecuteDataTable(query);
+            return this;
+        }
 
-            return _utils.ConvertDataTableToList<T>(dataTable);
+        public SelectOperation<T> OrderBy<TResult>(Expression<Func<T, TResult>> qwe)
+        {
+            return this;
         }
     }
 }

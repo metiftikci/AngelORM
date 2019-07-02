@@ -9,7 +9,9 @@ Basic and lightweight mssql operations framework.
 - [x] Run command for select, insert, update and delete queries.
 - [x] Make DataTable to List<T> adapter.
 - [ ] Add where feature to select query creator method.
+- [ ] Add order by feature to select query creator method.
 - [ ] Implement transaction.
+- [ ] Implement data annotations.
 
 ## Work On
 
@@ -18,9 +20,10 @@ Currently working on implement where feature with expression
 ```csharp
 // ========== GOAL ==========
 
-/* OK */ List<User> list = engine.Select<User>().ToList();
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5)
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin")
+/** OK **/ List<User> list = engine.Select<User>().ToList();
+/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
+/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
+List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").OrderBy(x => x.Id).OrderByDescendents(x => x.Name).ToList();
 List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
 List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
 List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
