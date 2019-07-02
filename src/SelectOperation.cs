@@ -36,7 +36,7 @@ namespace AngelORM
 
             ExpressionResolver expResolver = new ExpressionResolver();
             
-            string query = _selectQuery + " " + expResolver.Resolve<T>(predicate);
+            string query = _selectQuery + " WHERE " + expResolver.Resolve<T>(predicate);
 
             DataTable dataTable = _engine.ExecuteDataTable(query);
 
