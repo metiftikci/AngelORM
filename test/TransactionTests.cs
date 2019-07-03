@@ -54,10 +54,12 @@ namespace AngelORM.Tests
         {
             List<User> users = _engine.Select<User>().ToList();
 
+            User user = null;
+            
             if (users.Count == 0)
             {
-                var user = new User();
-                user.Name = Guid.NewGuid().ToList();
+                user = new User();
+                user.Name = Guid.NewGuid().ToString();
                 user.CreatedDate = DateTime.Now;
 
                 _engine.Insert(user);
@@ -69,7 +71,8 @@ namespace AngelORM.Tests
                 _engine.Insert(user);
             }
 
-            User user = users[0];
+            users = _engine.Select<User>().ToList();
+            user = users[0];
 
             using (Transaction transaction = _engine.BeginTransaction())
             {
