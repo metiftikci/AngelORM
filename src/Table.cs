@@ -6,7 +6,6 @@ namespace AngelORM
     public class Table
     {
         public string Name { get; set; }
-        public string DisplayName { get; set; }
         public List<Column> Columns { get; set; }
 
         public List<Column> ColumnsWithoutPrimaryKeyColumns => Columns.Where(x => !x.IsPrimaryKey).ToList();

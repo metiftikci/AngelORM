@@ -15,7 +15,6 @@ namespace AngelORM
             
             Table table = new Table();
             table.Name = type.Name;
-            table.DisplayName = type.Name;
             table.Columns = GetColumns<T>();
 
             return table;

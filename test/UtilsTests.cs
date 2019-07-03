@@ -15,7 +15,6 @@ namespace AngelORM.Tests
             Table table = _utils.GetTable<User>();
             
             Assert.Equal("User", table.Name);
-            Assert.Equal("User", table.DisplayName);
             Assert.NotNull(table.Columns);
         }
 
