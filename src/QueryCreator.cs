@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace AngelORM
 {
@@ -17,9 +16,11 @@ namespace AngelORM
             string tableName = $"[{table.Name}]";
 
             List<string> columnNames = table.Columns.Select(x => $"[{x.Name}] AS [{x.Alias}]").ToList();
-            string columns = string.Join($"{Environment.NewLine}      ,", columnNames);
+            string columns = string.Join($@"
+      ,", columnNames);
 
-            string query = $@"SELECT {columns}{Environment.NewLine}FROM {tableName}";
+            string query = $@"SELECT {columns}
+FROM {tableName}";
 
             return query;
         }
@@ -33,22 +34,25 @@ namespace AngelORM
             List<string> columnNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"[{x.Name}]").ToList();
             List<string> parameterNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"@{x.Alias}").ToList();
 
-            string columns = string.Join($"{Environment.NewLine}   ,", columnNames);
+            string columns = string.Join($@"
+   ,", columnNames);
             string output = string.Empty;
-            string parameters = string.Join($"{Environment.NewLine}   ,", parameterNames);
+            string parameters = string.Join($@"
+   ,", parameterNames);
 
             if (primaryKeyColumn != null)
             {
-                output = $"{Environment.NewLine}OUTPUT inserted.[{primaryKeyColumn.Name}]";
+                output = $@"
+OUTPUT inserted.[{primaryKeyColumn.Name}]";
             }
 
-            string query = Regex.Replace($@"INSERT INTO [{table.Name}] (
+            string query = $@"INSERT INTO [{table.Name}] (
     {columns}
 ){output}
 VALUES
 (
     {parameters}
-)", "\\r?\\n", Environment.NewLine);
+)";
 
             return query;
         }
@@ -65,13 +69,14 @@ VALUES
             List<string> assignmentList = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"[{x.Name}] = @{x.Alias}").ToList();
 
             string tableName = $"[{table.Name}]";
-            string assignments = string.Join($"{Environment.NewLine}   ,", assignmentList);
+            string assignments = string.Join($@"
+   ,", assignmentList);
             string primaryKeyColumnName = $"[{primaryKeyColumn.Name}]";
             string primaryKeyColumnParameter = $"@{primaryKeyColumn.Alias}";
 
-            string query = Regex.Replace($@"UPDATE {tableName}
+            string query = $@"UPDATE {tableName}
 SET {assignments}
-WHERE {primaryKeyColumnName} = {primaryKeyColumnParameter}", "\\r?\\n", Environment.NewLine);
+WHERE {primaryKeyColumnName} = {primaryKeyColumnParameter}";
 
             return query;
         }
