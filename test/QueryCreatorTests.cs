@@ -67,7 +67,7 @@ SET [Name] = @Name
    ,[Email] = @Email
    ,[CreatedDate] = @CreatedDate
    ,[Active] = @Active
-WHERE [Id] = @Id", "\\r\\n?",  Environment.NewLine);
+WHERE [Id] = @Id", "\\r?\\n",  Environment.NewLine);
 
             string createdQuery = _queryCreator.CreateUpdateQuery<User>();
 
