@@ -67,12 +67,12 @@ namespace AngelORM.Tests
         {
             List<User> users = _engine.Select<User>().ToList();
             
-            if (users.Count = 0)
+            if (users.Count == 0)
             {
-                AddNewUser()
-                AddNewUser()
-                AddNewUser()
-                AddNewUser()
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
             }
 
             users = _engine.Select<User>().ToList();
@@ -94,12 +94,12 @@ namespace AngelORM.Tests
         {
             List<User> users = _engine.Select<User>().ToList();
             
-            if (users.Count = 0)
+            if (users.Count == 0)
             {
-                AddNewUser()
-                AddNewUser()
-                AddNewUser()
-                AddNewUser()
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
             }
 
             users = _engine.Select<User>().ToList();
