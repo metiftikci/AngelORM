@@ -8,3 +8,5 @@ before_build:
   - cmd: dotnet --version
   - cmd: dotnet restore
   - cmd: dotnet build
+after_build:
+  - cmd: dotnet test
