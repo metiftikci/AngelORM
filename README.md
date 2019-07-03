@@ -24,10 +24,10 @@ Currently working on implement where feature with expression
 /** OK **/ List<User> list = engine.Select<User>().ToList();
 /** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
 /** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
+/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
 List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").OrderBy(x => x.Id).OrderByDescendents(x => x.Name).ToList();
-List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
 ```
 
 ## Usage
@@ -38,10 +38,12 @@ Easy to use. You can do anything with one line :blush:
 Engine engine = new Engine(connectionString);
 
 // SELECT
-List<User> users = engine.ToList<User>();
+List<User> users = engine.Select<User>().ToList();
 
-// SELECT WITH CONDITIONS **[NEW]**
-List<User> users = engine.ToList<User>(x => x.Id > 5 && x.Role == "admin" && x.CreatedDate < dateTime && x.Active == true);
+List<User> users = engine.Select<User>().Where(x => x.Id > 5 && x.Role == "admin" && x.CreatedDate < dateTime && x.Active == true).ToList();
+List<User> users = engine.Select<User>().Where(x => x.Name.Contains("foo")).ToList();
+List<User> users = engine.Select<User>().Where(x => x.Name.StartsWith("foo")).ToList();
+List<User> users = engine.Select<User>().Where(x => x.Name.EndsWith("foo")).ToList();
 
 // INSERT
 engine.Insert(model);

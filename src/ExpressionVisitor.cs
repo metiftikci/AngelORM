@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace AngelORM
 {
@@ -29,6 +30,10 @@ namespace AngelORM
             else if (expression is MemberExpression)
             {
                 return VisitMember((MemberExpression)expression);
+            }
+            else if (expression is MethodCallExpression)
+            {
+                return VisitMethodCall((MethodCallExpression)expression);
             }
             else
             {
@@ -70,16 +75,45 @@ namespace AngelORM
 
         public string VisitMember(MemberExpression expression)
         {
-            if (expression.Expression != null && expression.Expression.NodeType == ExpressionType.Parameter)
+            if (expression.Member is PropertyInfo)
             {
                 string columnName = _table.Columns.First(x => x.Alias == expression.Member.Name).Name;
 
                 return $"[{columnName}]";
             }
-            else
+            else if (expression.Member is FieldInfo)
             {
                 return GetValue(expression);
             }
+
+            throw new AngelORMException($"Expression is not a property or field. Expression: {expression}");
+        }
+
+        private string VisitMethodCall(MethodCallExpression expression)
+        {
+            if (expression.Method == typeof(string).GetMethod("Contains", new[] { typeof(string) }))
+            {
+                string value = Visit(expression.Arguments[0]);
+                value = value.Substring(1, value.Length - 2);
+
+                return $"({Visit(expression.Object)} LIKE '%{value}%')";
+            }
+            else if (expression.Method == typeof(string).GetMethod("StartsWith", new[] { typeof(string) }))
+            {
+                string value = Visit(expression.Arguments[0]);
+                value = value.Substring(1, value.Length - 2);
+
+                return $"({Visit(expression.Object)} LIKE '{value}%')";
+            }
+            else if (expression.Method == typeof(string).GetMethod("EndsWith", new[] { typeof(string) }))
+            {
+                string value = Visit(expression.Arguments[0]);
+                value = value.Substring(1, value.Length - 2);
+
+                return $"({Visit(expression.Object)} LIKE '%{value}')";
+            }
+
+            throw new UnsupportedException($"Unsupported method call: {expression.Method.Name}");
         }
 
         private string GetValue(MemberExpression expression)

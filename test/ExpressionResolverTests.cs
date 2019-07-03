@@ -37,5 +37,53 @@ namespace AngelORM.Tests
             string sql = _resolver.Resolve<User>(x => x.Active != true);
             Assert.Equal("([Active] <> 1)", sql);
         }
+
+        [Fact]
+        public void Resolve_property_contains_string_constant()
+        {
+            string sql = _resolver.Resolve<User>(x => x.Name.Contains("uham"));
+            Assert.Equal("([Name] LIKE '%uham%')", sql);
+        }
+
+        [Fact]
+        public void Resolve_property_contains_string_local_value()
+        {
+            string value = "uham";
+
+            string sql = _resolver.Resolve<User>(x => x.Name.Contains(value));
+            Assert.Equal("([Name] LIKE '%uham%')", sql);
+        }
+
+        [Fact]
+        public void Resolve_property_starts_with_string_constant()
+        {
+            string sql = _resolver.Resolve<User>(x => x.Name.StartsWith("uham"));
+            Assert.Equal("([Name] LIKE 'uham%')", sql);
+        }
+
+        [Fact]
+        public void Resolve_property_starts_with_string_local_value()
+        {
+            string value = "uham";
+
+            string sql = _resolver.Resolve<User>(x => x.Name.StartsWith(value));
+            Assert.Equal("([Name] LIKE 'uham%')", sql);
+        }
+
+        [Fact]
+        public void Resolve_property_end_with_string_constant()
+        {
+            string sql = _resolver.Resolve<User>(x => x.Name.EndsWith("uham"));
+            Assert.Equal("([Name] LIKE '%uham')", sql);
+        }
+
+        [Fact]
+        public void Resolve_property_ends_with_string_local_value()
+        {
+            string value = "uham";
+
+            string sql = _resolver.Resolve<User>(x => x.Name.EndsWith(value));
+            Assert.Equal("([Name] LIKE '%uham')", sql);
+        }
     }
 }
