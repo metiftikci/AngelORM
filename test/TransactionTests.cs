@@ -27,18 +27,10 @@ namespace AngelORM.Tests
 
                 _engine.Insert(user);
                 Assert.NotEqual(0, user.Id);
-                
-                user.Id = 0;
-                _engine.Insert(user);
-                Assert.NotEqual(0, user.Id);
-                
-                user.Id = 0;
-                _engine.Insert(user);
-                Assert.NotEqual(0, user.Id);
 
                 users2 = _engine.Select<User>().ToList();
 
-                Assert.Equal(users.Count, users2.Count - 3);
+                Assert.Equal(users.Count, users2.Count - 1);
 
                 transaction.Rollback();
 
@@ -46,7 +38,7 @@ namespace AngelORM.Tests
             }
 
             Assert.Equal(users.Count, users3.Count);
-            Assert.Equal(users2.Count, users3.Count + 3);
+            Assert.Equal(users2.Count, users3.Count + 1);
         }
 
         [Fact]
