@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/4jmhhcdkrrk9qieh/branch/master?svg=true)](https://ci.appveyor.com/project/jaqra/angelorm/branch/master)
+
 # Angel ORM
 
 Basic and lightweight mssql operations framework.
