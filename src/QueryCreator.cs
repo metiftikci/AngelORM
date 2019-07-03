@@ -41,7 +41,7 @@ FROM {tableName}";
                 output = $"\r\nOUTPUT inserted.[{primaryKeyColumn.Name}]";
             }
 
-            string query = $@"INSERT INTO [User] (
+            string query = $@"INSERT INTO [{table.Name}] (
     {columns}
 ){output}
 VALUES
