@@ -3,6 +3,8 @@ image: Visual Studio 2017
 services:
   - mssql2014
 before_build:
+  - cmd: sqlcmd -S "$sqlInstance" -Q "Use [master]; CREATE DATABASE [AngelORM]"
+  - cmd: sqlcmd -S "$sqlInstance" -Q "USE [AngelORM]; CREATE TABLE [dbo].[User]([Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL, [Name] [nvarchar](max) NULL, [Surname] [nvarchar](max) NULL, [Username] [nvarchar](max) NULL, [Password] [nvarchar](max) NULL, [Email] [nvarchar](max) NULL, [CreatedDate] [datetime] NOT NULL, [Active] [bit] NOT NULL)"
   - cmd: dotnet --version
   - cmd: dotnet restore
   - cmd: dotnet build
