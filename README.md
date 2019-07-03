@@ -8,10 +8,10 @@ Basic and lightweight mssql operations framework.
 - [x] Add parameter creator.
 - [x] Run command for select, insert, update and delete queries.
 - [x] Make DataTable to List<T> adapter.
+- [x] Implement transaction.
 - [ ] Add where feature to select query creator method.
 - [ ] Add order by feature to select query creator method.
 - [ ] Add Nullable<T> column type feature.
-- [ ] Implement transaction.
 - [ ] Implement data annotations.
 
 ## Work On
@@ -54,6 +54,23 @@ int affectedRows = engine.Update(model);
 
 // DELETE
 int affectedRows = engine.Delete(model);
+
+// ** TRANSACTIONS **
+using (Transaction transaction = _engine.BeginTransaction())
+{
+    try
+    {
+        _engine.Insert(user);
+        _engine.Insert(user2);
+        _engine.Insert(user3);
+
+        transaction.Commit();
+    }
+    catch
+    {
+        transaction.Rollback();
+    }
+}
 ```
 
 You can look at [tests](test/EngineTests.cs) to see real examples.

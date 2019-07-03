@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -7,7 +6,10 @@ namespace AngelORM
 {
     public class Engine
     {
+        public bool HasTransaction => _transaction != null;
+
         private string _connectionString;
+        private Transaction _transaction;
         private QueryCreator _queryCreator;
         private ParameterCreator _parameterCreator;
         private Utils _utils;
@@ -80,6 +82,8 @@ namespace AngelORM
         {
             if (query == null) throw new ArgumentNullException(nameof(query));
 
+            if (_transaction != null) return _transaction.ExecuteNonQuery(query, parameters);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -103,6 +107,8 @@ namespace AngelORM
         public object ExecuteScalar(string query, params SqlParameter[] parameters)
         {
             if (query == null) throw new ArgumentNullException(nameof(query));
+
+            if (_transaction != null) return _transaction.ExecuteScalar(query, parameters);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -128,6 +134,8 @@ namespace AngelORM
         {
             if (query == null) throw new ArgumentNullException(nameof(query));
 
+            if (_transaction != null) return _transaction.ExecuteDataTable(query, parameters);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -152,6 +160,36 @@ namespace AngelORM
                     }
                 }
             }
+        }
+
+        /// <exception cref="InvalidOperationException">If transaction already created.</exception>
+        public Transaction BeginTransaction()
+        {
+            if (HasTransaction) throw new InvalidOperationException("This engine has already a transaction.");
+
+            _transaction = new Transaction(this, _connectionString);
+
+            return _transaction;
+        }
+
+        /// <exception cref="AngelORMException">If transaction not created.</exception>
+        public void EndTransaction()
+        {
+            if (!HasTransaction) throw new AngelORMException("Transaction not found.");
+
+            if (!_transaction.IsDisposed)
+            {
+                _transaction.Dispose();
+            }
+            else
+            {
+                _transaction = null;
+            }
+        }
+
+        internal void ClearTransactionValue()
+        {
+            _transaction = null;
         }
     }
 }
