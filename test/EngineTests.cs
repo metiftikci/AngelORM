@@ -66,6 +66,17 @@ namespace AngelORM.Tests
         public void UpdateTest()
         {
             List<User> users = _engine.Select<User>().ToList();
+            
+            if (users.Count = 0)
+            {
+                AddNewUser()
+                AddNewUser()
+                AddNewUser()
+                AddNewUser()
+            }
+
+            users = _engine.Select<User>().ToList();
+
             User lastUser = users.Last();
 
             lastUser.Username = Guid.NewGuid().ToString();
@@ -82,6 +93,17 @@ namespace AngelORM.Tests
         public void DeleteTest()
         {
             List<User> users = _engine.Select<User>().ToList();
+            
+            if (users.Count = 0)
+            {
+                AddNewUser()
+                AddNewUser()
+                AddNewUser()
+                AddNewUser()
+            }
+
+            users = _engine.Select<User>().ToList();
+            
             User lastUser = users.Last();
 
             _engine.Delete(lastUser);
@@ -90,6 +112,19 @@ namespace AngelORM.Tests
             User lastUser2 = users2.Last();
 
             Assert.NotEqual(lastUser.Id, lastUser2.Id);
+        }
+
+        private void AddNewUser()
+        {
+            User user = new User();
+            user.Name = "Foo";
+            user.Username = Guid.NewGuid().ToString();
+            user.Password = "qwerty";
+            user.Password = "baz@qux.com";
+            user.CreatedDate = DateTime.Now;
+            user.Active = true;
+
+            _engine.Insert(user);
         }
     }
 }
