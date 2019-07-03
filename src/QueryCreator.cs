@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AngelORM
 {
@@ -18,8 +19,7 @@ namespace AngelORM
             List<string> columnNames = table.Columns.Select(x => $"[{x.Name}] AS [{x.Alias}]").ToList();
             string columns = string.Join($"{Environment.NewLine}      ,", columnNames);
 
-            string query = $@"SELECT {columns}
-FROM {tableName}";
+            string query = $@"SELECT {columns}{Environment.NewLine}FROM {tableName}";
 
             return query;
         }
@@ -42,13 +42,13 @@ FROM {tableName}";
                 output = $"{Environment.NewLine}OUTPUT inserted.[{primaryKeyColumn.Name}]";
             }
 
-            string query = $@"INSERT INTO [{table.Name}] (
+            string query = Regex.Replace($@"INSERT INTO [{table.Name}] (
     {columns}
 ){output}
 VALUES
 (
     {parameters}
-)";
+)", "\\r?\\n", Environment.NewLine);
 
             return query;
         }
@@ -69,9 +69,9 @@ VALUES
             string primaryKeyColumnName = $"[{primaryKeyColumn.Name}]";
             string primaryKeyColumnParameter = $"@{primaryKeyColumn.Alias}";
 
-            string query = $@"UPDATE {tableName}
+            string query = Regex.Replace($@"UPDATE {tableName}
 SET {assignments}
-WHERE {primaryKeyColumnName} = {primaryKeyColumnParameter}";
+WHERE {primaryKeyColumnName} = {primaryKeyColumnParameter}", "\\r?\\n", Environment.NewLine);
 
             return query;
         }
