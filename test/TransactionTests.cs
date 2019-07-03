@@ -13,9 +13,7 @@ namespace AngelORM.Tests
         [Fact]
         public void Rollback_check_users_count()
         {
-            List<User> users = _engine.Select<User>().ToList();
-            List<User> users2;
-            List<User> users3;
+            int id = 0;
 
             using (Transaction transaction = _engine.BeginTransaction())
             {
@@ -28,17 +26,16 @@ namespace AngelORM.Tests
                 _engine.Insert(user);
                 Assert.NotEqual(0, user.Id);
 
-                users2 = _engine.Select<User>().ToList();
-
-                Assert.Equal(users.Count, users2.Count - 1);
+                id = user.Id;
 
                 transaction.Rollback();
-
-                users3 = _engine.Select<User>().ToList();
             }
 
-            Assert.Equal(users.Count, users3.Count);
-            Assert.Equal(users2.Count, users3.Count + 1);
+            var users = _engine.Select<User>().Where(x => x.Id == id).ToList();
+
+            int newCount = users.Count;
+
+            Assert.Equal(0, newCount);
         }
 
         [Fact]
