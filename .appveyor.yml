@@ -1,5 +1,7 @@
 version: '1.0.{build}'
 image: Visual Studio 2017
+services:
+  - mssql2012sp1
 before_build:
   - cmd: dotnet --version
   - cmd: dotnet restore

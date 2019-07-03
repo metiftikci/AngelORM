@@ -8,7 +8,7 @@ namespace AngelORM.Tests
 {
     public class EngineTests
     {
-        public const string CS = "Server=MONSTER\\MET; Database=AngelORM; Integrated Security=True;";
+        public const string CS = "Server=(local)\SQL2012SP1;Database=master;User ID=sa;Password=Password12!";
 
         private Engine _engine = new Engine(CS);
 
