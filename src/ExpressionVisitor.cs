@@ -1,17 +1,15 @@
 using System;
-using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
-namespace AngelORM.Expressions
+namespace AngelORM
 {
-    public class Visitor<T>
+    public class ExpressionVisitor<T>
         where T : class
     {
         private Table _table;
 
-        public Visitor()
+        public ExpressionVisitor()
         {
             Utils utils = new Utils();
 

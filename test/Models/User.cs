@@ -1,3 +1,5 @@
+using System;
+
 namespace AngelORM.Tests.Models
 {
     public class User
@@ -8,5 +10,7 @@ namespace AngelORM.Tests.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool Active { get; set; }
     }
 }

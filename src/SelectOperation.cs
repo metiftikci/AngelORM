@@ -37,10 +37,10 @@ namespace AngelORM
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             if (_where != null) throw new InvalidOperationException("The 'Where' method already used.");
 
-            ExpressionResolver expResolver = new ExpressionResolver();
-            
+            ExpressionResolver expressionResolver = new ExpressionResolver();
+
             _where = @"
-WHERE " + expResolver.Resolve<T>(predicate);
+WHERE " + expressionResolver.Resolve(predicate);
 
             return this;
         }

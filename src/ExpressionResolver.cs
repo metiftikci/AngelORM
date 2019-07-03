@@ -1,4 +1,3 @@
-using AngelORM.Expressions;
 using System;
 using System.Linq.Expressions;
 
@@ -9,7 +8,7 @@ namespace AngelORM
         public string Resolve<T>(Expression<Func<T, bool>> predicate)
             where T : class
         {
-            Visitor<T> visitor = new Visitor<T>();
+            ExpressionVisitor<T> visitor = new ExpressionVisitor<T>();
             
             return visitor.Visit(predicate.Body);
         }

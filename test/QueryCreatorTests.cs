@@ -16,6 +16,8 @@ namespace AngelORM.Tests
       ,[Username] AS [Username]
       ,[Password] AS [Password]
       ,[Email] AS [Email]
+      ,[CreatedDate] AS [CreatedDate]
+      ,[Active] AS [Active]
 FROM [User]";
 
             string createdQuery = _queryCreator.CreateSelectQuery<User>();
@@ -32,6 +34,8 @@ FROM [User]";
    ,[Username]
    ,[Password]
    ,[Email]
+   ,[CreatedDate]
+   ,[Active]
 )
 OUTPUT inserted.[Id]
 VALUES
@@ -41,6 +45,8 @@ VALUES
    ,@Username
    ,@Password
    ,@Email
+   ,@CreatedDate
+   ,@Active
 )";
 
             string createdQuery = _queryCreator.CreateInsertQuery<User>();
@@ -57,6 +63,8 @@ SET [Name] = @Name
    ,[Username] = @Username
    ,[Password] = @Password
    ,[Email] = @Email
+   ,[CreatedDate] = @CreatedDate
+   ,[Active] = @Active
 WHERE [Id] = @Id";
 
             string createdQuery = _queryCreator.CreateUpdateQuery<User>();

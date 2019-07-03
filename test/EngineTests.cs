@@ -1,7 +1,7 @@
+using AngelORM.Tests.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AngelORM.Tests.Models;
 using Xunit;
 
 namespace AngelORM.Tests
@@ -13,26 +13,21 @@ namespace AngelORM.Tests
         private Engine _engine = new Engine(CS);
 
         [Fact]
-        public void SelectTest()
+        public void Select_not_throws_exception()
         {
             List<User> users = _engine.Select<User>().ToList();
-
-            Assert.Equal("muhammed", users[0].Username);
-            Assert.Equal("jaqra@hotmail.com", users[0].Email);
         }
 
         [Fact]
-        public void SelectWhereTest()
+        public void SelectWhere_property_equals_to_string_constant()
         {
             List<User> users = _engine.Select<User>().Where(x => x.Name == "Muhammed").ToList();
+        }
 
-            Assert.Equal(1, users.Count);
-            Assert.Equal("muhammed", users[0].Username);
-            Assert.Equal("jaqra@hotmail.com", users[0].Email);
-
-            users = _engine.Select<User>().Where(x => x.Id > 5 && x.Id < 16).ToList();
-
-            Assert.Equal(5, users.Count);
+        [Fact]
+        public void SelectWhere_id_between_int_constants()
+        {
+            List<User> users = _engine.Select<User>().Where(x => x.Id > 5 && x.Id < 16).ToList();
         }
 
         [Fact]
@@ -43,12 +38,14 @@ namespace AngelORM.Tests
             user.Username = "bar";
             user.Password = "qwerty";
             user.Password = "baz@qux.com";
+            user.CreatedDate = DateTime.Now;
+            user.Active = true;
 
             _engine.Insert(user);
         }
 
         [Fact]
-        public void InsertTest_check_inserted_key()
+        public void InsertTest_inserted_id_assings_to_id_property()
         {
             int lastUserId = (int)(decimal)_engine.ExecuteScalar("SELECT IDENT_CURRENT('User')");
 
@@ -57,6 +54,8 @@ namespace AngelORM.Tests
             user.Username = "bar";
             user.Password = "qwerty";
             user.Password = "baz@qux.com";
+            user.CreatedDate = DateTime.Now;
+            user.Active = true;
 
             _engine.Insert(user);
 

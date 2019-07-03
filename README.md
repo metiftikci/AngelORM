@@ -10,6 +10,7 @@ Basic and lightweight mssql operations framework.
 - [x] Make DataTable to List<T> adapter.
 - [ ] Add where feature to select query creator method.
 - [ ] Add order by feature to select query creator method.
+- [ ] Add Nullable<T> column type feature.
 - [ ] Implement transaction.
 - [ ] Implement data annotations.
 

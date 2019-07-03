@@ -32,7 +32,6 @@ namespace AngelORM
                 column.IsForeignKey = false;
                 column.Name = property.Name;
                 column.Alias = property.Name;
-                column.DisplayName = property.Name;
 
                 columns.Add(column);
             }

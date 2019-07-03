@@ -23,7 +23,7 @@ namespace AngelORM.Tests
         {
             List<Column> columns = _utils.GetColumns<User>();
 
-            Assert.Equal(6, columns.Count);
+            Assert.Equal(8, columns.Count);
             Assert.True(columns[0].IsPrimaryKey);
             Assert.Equal("Name", columns[1].Name);
         }
