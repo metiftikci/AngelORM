@@ -1,5 +1,6 @@
 using AngelORM.Tests.Models;
 using System;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace AngelORM.Tests
@@ -7,10 +8,11 @@ namespace AngelORM.Tests
     public class QueryCreatorTests
     {
         private QueryCreator _queryCreator = new QueryCreator();
+
         [Fact]
         public void CreateSelectQueryTest()
         {
-            string query = @"SELECT [Id] AS [Id]
+            string query = Regex.Replace(@"SELECT [Id] AS [Id]
       ,[Name] AS [Name]
       ,[Surname] AS [Surname]
       ,[Username] AS [Username]
@@ -18,7 +20,7 @@ namespace AngelORM.Tests
       ,[Email] AS [Email]
       ,[CreatedDate] AS [CreatedDate]
       ,[Active] AS [Active]
-FROM [User]";
+FROM [User]", "\\r\\n?",  Environment.NewLine);
 
             string createdQuery = _queryCreator.CreateSelectQuery<User>();
 
@@ -28,7 +30,7 @@ FROM [User]";
         [Fact]
         public void CreateInsertQueryTest()
         {
-            string query = @"INSERT INTO [User] (
+            string query = Regex.Replace(@"INSERT INTO [User] (
     [Name]
    ,[Surname]
    ,[Username]
@@ -47,7 +49,7 @@ VALUES
    ,@Email
    ,@CreatedDate
    ,@Active
-)";
+)", "\\r\\n?",  Environment.NewLine);
 
             string createdQuery = _queryCreator.CreateInsertQuery<User>();
 
@@ -57,7 +59,7 @@ VALUES
         [Fact]
         public void CreateUpdateQueryTest()
         {
-            string query = @"UPDATE [User]
+            string query = Regex.Replace(@"UPDATE [User]
 SET [Name] = @Name
    ,[Surname] = @Surname
    ,[Username] = @Username
@@ -65,7 +67,7 @@ SET [Name] = @Name
    ,[Email] = @Email
    ,[CreatedDate] = @CreatedDate
    ,[Active] = @Active
-WHERE [Id] = @Id";
+WHERE [Id] = @Id", "\\r\\n?",  Environment.NewLine);
 
             string createdQuery = _queryCreator.CreateUpdateQuery<User>();
 

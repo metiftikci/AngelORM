@@ -53,6 +53,22 @@ namespace AngelORM.Tests
         public void Rollback_update()
         {
             List<User> users = _engine.Select<User>().ToList();
+
+            if (users.Count == 0)
+            {
+                var user = new User();
+                user.Name = Guid.NewGuid().ToList();
+                user.CreatedDate = DateTime.Now;
+
+                _engine.Insert(user);
+                user.Id = 0;
+                _engine.Insert(user);
+                user.Id = 0;
+                _engine.Insert(user);
+                user.Id = 0;
+                _engine.Insert(user);
+            }
+
             User user = users[0];
 
             using (Transaction transaction = _engine.BeginTransaction())
