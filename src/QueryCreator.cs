@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AngelORM
@@ -15,7 +16,7 @@ namespace AngelORM
             string tableName = $"[{table.Name}]";
 
             List<string> columnNames = table.Columns.Select(x => $"[{x.Name}] AS [{x.Alias}]").ToList();
-            string columns = string.Join("\r\n      ,", columnNames);
+            string columns = string.Join($"{Environment.NewLine}      ,", columnNames);
 
             string query = $@"SELECT {columns}
 FROM {tableName}";
@@ -32,13 +33,13 @@ FROM {tableName}";
             List<string> columnNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"[{x.Name}]").ToList();
             List<string> parameterNames = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"@{x.Alias}").ToList();
 
-            string columns = string.Join("\r\n   ,", columnNames);
+            string columns = string.Join($"{Environment.NewLine}   ,", columnNames);
             string output = string.Empty;
-            string parameters = string.Join("\r\n   ,", parameterNames);
+            string parameters = string.Join($"{Environment.NewLine}   ,", parameterNames);
 
             if (primaryKeyColumn != null)
             {
-                output = $"\r\nOUTPUT inserted.[{primaryKeyColumn.Name}]";
+                output = $"{Environment.NewLine}OUTPUT inserted.[{primaryKeyColumn.Name}]";
             }
 
             string query = $@"INSERT INTO [{table.Name}] (
@@ -64,7 +65,7 @@ VALUES
             List<string> assignmentList = table.ColumnsWithoutPrimaryKeyColumns.Select(x => $"[{x.Name}] = @{x.Alias}").ToList();
 
             string tableName = $"[{table.Name}]";
-            string assignments = string.Join("\r\n   ,", assignmentList);
+            string assignments = string.Join($"{Environment.NewLine}   ,", assignmentList);
             string primaryKeyColumnName = $"[{primaryKeyColumn.Name}]";
             string primaryKeyColumnParameter = $"@{primaryKeyColumn.Alias}";
 
