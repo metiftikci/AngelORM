@@ -75,13 +75,15 @@ namespace AngelORM
 
         public string VisitMember(MemberExpression expression)
         {
-            if (expression.Member is PropertyInfo)
+            if (expression.Member is PropertyInfo &&
+                expression.Expression != null &&
+                expression.Expression.NodeType == ExpressionType.Parameter)
             {
                 string columnName = _table.Columns.First(x => x.Alias == expression.Member.Name).Name;
 
                 return $"[{columnName}]";
             }
-            else if (expression.Member is FieldInfo)
+            else if (expression.Member is PropertyInfo || expression.Member is FieldInfo)
             {
                 return GetValue(expression);
             }

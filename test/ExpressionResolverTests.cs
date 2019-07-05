@@ -1,5 +1,6 @@
 using AngelORM.Tests.Models;
 using System;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace AngelORM.Tests
@@ -7,6 +8,48 @@ namespace AngelORM.Tests
     public class ExpressionResolverTests
     {
         private ExpressionResolver _resolver = new ExpressionResolver();
+
+        [Fact]
+        public void Resolve_Tests()
+        {
+            var list = new[]
+            {
+                new {
+                    SQL = _resolver.Resolve<User>(x => x.Id == 5),
+                    Result = "([Id] = 5)"
+                },
+                new {
+                    SQL = _resolver.Resolve<User>(x => 5 == x.Id),
+                    Result = "(5 = [Id])"
+                },
+                new {
+                    SQL = _resolver.Resolve<User>(x => 5 == 8),
+                    // TODO: This sould not be allowed => WHERE 0
+                    Result = "0" // 5 == 8 is False, False => 0
+                },
+                new {
+                    SQL = _resolver.Resolve<User>(x => x.Name == x.Surname),
+                    Result = "([Name] = [Surname])"
+                },
+                new {
+                    SQL = _resolver.Resolve<User>(x => x.Id == 5 && x.Email == "foo"),
+                    Result = "(([Id] = 5) AND ([Email] = 'foo'))"
+                },
+                new {
+                    SQL = _resolver.Resolve<User>(x => (x.Id == 5 && x.Email == "foo") || x.Active == true),
+                    Result = "((([Id] = 5) AND ([Email] = 'foo')) OR ([Active] = 1))"
+                },
+                new {
+                    SQL = _resolver.Resolve<User>(x => x.Id == 5 && (x.Email == "foo" || x.Active == true)),
+                    Result = "(([Id] = 5) AND (([Email] = 'foo') OR ([Active] = 1)))"
+                },
+            };
+
+            foreach (var item in list)
+            {
+                Assert.Equal(item.SQL, item.Result);
+            }
+        }
 
         [Fact]
         public void Resolve_property_equals_to_int_constant()
@@ -84,6 +127,19 @@ namespace AngelORM.Tests
 
             string sql = _resolver.Resolve<User>(x => x.Name.EndsWith(value));
             Assert.Equal("([Name] LIKE '%uham')", sql);
+        }
+
+        [Fact]
+        public void Resolve_when_equals_to_parameter_property_value()
+        {
+            Resolve_sub_when_equals_to_parameter_property_value(new User() { Name="foo" });
+        }
+
+        public void Resolve_sub_when_equals_to_parameter_property_value(User user)
+        {
+            string sql = _resolver.Resolve<User>(x => x.Name == user.Name);
+
+            Assert.Equal("([Name] = 'foo')", sql);
         }
     }
 }
