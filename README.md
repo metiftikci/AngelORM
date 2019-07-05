@@ -36,12 +36,12 @@ Currently working on implement where feature with expression
 ```csharp
 // ========== GOAL: Where Feature ==========
 
-:white_check_mark: List<User> list = engine.Select<User>().ToList();
-:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
-:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
-:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
+/* OK */ List<User> list = engine.Select<User>().ToList();
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
 List<User> list = engine.Select<User>().Where(x => selectedIds.Contains(x.Id)).ToList()
 ```
 
