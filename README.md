@@ -23,11 +23,14 @@ Basic and lightweight mssql operations framework.
 
 ## Roadmap
 
-- [ ] Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
-- [ ] Add Nullable<T> column type feature.
-- [ ] Implement data annotations.
-- [ ] Add OnQueryCreated method to SelectOperation class.
-- [ ] Add OrderBy and OrderByDescending feature to SelectOperation class.
+- Add Nullable<T> column type feature.
+- Add enum column type feature.
+- Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
+- Implement data annotations to define table and column names.
+- Add OnQueryCreated method to SelectOperation.
+- Add OrderBy and OrderByDescending feature to SelectOperation.
+- Add CreateTable<T>, CreateTableIfNotExists<T> and MigrateTable<T> methods to Engine.
+- Validate model fetaure from data annotations on Insert and Update.
 
 ## Work On
 
