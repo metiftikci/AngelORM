@@ -4,32 +4,45 @@
 
 Basic and lightweight mssql operations framework.
 
+## Why Angel ORM instead of Entity Framework?
+
+- Lightweight
+- Customizable
+- Working with **all** model classes (does not require migration or anything)
+
+## Fetaures
+
+- **Select**: Get data as model list.
+- **Where**: Get data with expression conditions.
+- **Insert**: Insert new data to database.
+- **Key**: Inserted key feedback to model.
+- **Update**: Update row with auto detected key.
+- **Delete**: Delete row with auto detected key.
+- **Transaction**: Begin, Commit and Rollback transaction.
+- **Raw Query**: Execute custom sql query.
+
 ## Roadmap
 
-- [x] Add query creators for select, insert, update and delete operations.
-- [x] Add parameter creator.
-- [x] Run command for select, insert, update and delete queries.
-- [x] Make DataTable to List<T> adapter.
-- [x] Implement transaction.
-- [ ] Add where feature to select query creator method.
-- [ ] Add order by feature to select query creator method.
+- [ ] Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
 - [ ] Add Nullable<T> column type feature.
 - [ ] Implement data annotations.
+- [ ] Add OnQueryCreated method to SelectOperation class.
+- [ ] Add OrderBy and OrderByDescending feature to SelectOperation class.
 
 ## Work On
 
 Currently working on implement where feature with expression
 
 ```csharp
-// ========== GOAL ==========
+// ========== GOAL: Where Feature ==========
 
-/** OK **/ List<User> list = engine.Select<User>().ToList();
-/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
-/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
-/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-/** OK **/ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
-List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").OrderBy(x => x.Id).OrderByDescendents(x => x.Name).ToList();
+:white_check_mark: List<User> list = engine.Select<User>().ToList();
+:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
+:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
+:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
+:white_check_mark: List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
+List<User> list = engine.Select<User>().Where(x => selectedIds.Contains(x.Id)).ToList()
 ```
 
 ## Usage
@@ -58,19 +71,21 @@ int affectedRows = engine.Update(model);
 int affectedRows = engine.Delete(model);
 
 // ** TRANSACTIONS **
-using (Transaction transaction = _engine.BeginTransaction())
+using (Transaction transaction = engine.BeginTransaction())
 {
     try
     {
-        _engine.Insert(user);
-        _engine.Insert(user2);
-        _engine.Insert(user3);
+        engine.Insert(foo);
+        engine.Update(bar);
+        engine.Delete(baz);
 
         transaction.Commit();
     }
-    catch
+    catch (Exception ex)
     {
         transaction.Rollback();
+
+        Log(ex);
     }
 }
 ```
