@@ -1,8 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/4jmhhcdkrrk9qieh/branch/master?svg=true)](https://ci.appveyor.com/project/jaqra/angelorm/branch/master)
-
-![Nuget](https://img.shields.io/nuget/v/AngelORM.svg)
-
-![GitHub](https://img.shields.io/github/license/jaqra/AngelORM.svg)
+[![Build status](https://ci.appveyor.com/api/projects/status/4jmhhcdkrrk9qieh/branch/master?svg=true)](https://ci.appveyor.com/project/jaqra/angelorm/branch/master) ![Nuget](https://img.shields.io/nuget/v/AngelORM.svg) ![GitHub](https://img.shields.io/github/license/jaqra/AngelORM.svg)
 
 # Angel ORM
 
