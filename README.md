@@ -3,6 +3,8 @@
 ![Nuget](https://img.shields.io/nuget/v/AngelORM.svg)
 ![GitHub](https://img.shields.io/github/license/jaqra/AngelORM.svg)
 
+![LOGO](https://raw.githubusercontent.com/jaqra/AngelORM/master/assets/logo.jpg)
+
 # Angel ORM
 
 Basic and lightweight mssql operations framework.
