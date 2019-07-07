@@ -141,5 +141,13 @@ namespace AngelORM.Tests
 
             Assert.Equal("([Name] = 'foo')", sql);
         }
+
+        [Fact]
+        public void ResolveOrderBy()
+        {
+            string result = _resolver.ResolveOrderBy<User, string>(x => x.Name);
+
+            Assert.Equal("[Name]", result);
+        }
     }
 }

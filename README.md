@@ -12,6 +12,7 @@ Basic and lightweight mssql operations framework.
 ## Why Angel ORM instead of Entity Framework?
 
 - Lightweight
+- Less exception
 - Customizable
 - Working with **all** model classes (does not require migration or anything)
 
@@ -19,6 +20,7 @@ Basic and lightweight mssql operations framework.
 
 - **Select**: Get data as model list.
 - **Where**: Get data with expression conditions.
+- **OrderBy**: Get ordered data (also multiple and descending combinations avaible).
 - **Insert**: Insert new data to database.
 - **Key**: Inserted key feedback to model.
 - **Update**: Update row with auto detected key.
@@ -33,23 +35,14 @@ Basic and lightweight mssql operations framework.
 - Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
 - Implement data annotations to define table and column names.
 - Add OnQueryCreated method to SelectOperation.
-- Add OrderBy and OrderByDescending feature to SelectOperation.
 - Add CreateTable<T>, CreateTableIfNotExists<T> and MigrateTable<T> methods to Engine.
 - Validate model fetaure from data annotations on Insert and Update.
 
 ## Work On
 
-Currently working on implement where feature with expression
+Currently working on implement where feature with expression for int contains method.
 
 ```csharp
-// ========== GOAL: Where Feature ==========
-
-/* OK */ List<User> list = engine.Select<User>().ToList();
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5).ToList();
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > minId && x.Role == "admin").ToList();
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && x.Username.Contains("qweqwe")).ToList();
-/* OK */ List<User> list = engine.Select<User>().Where(x => x.Id > 5 && (x.Username.StartsWith("A") || x.Username.EndsWith("B"))).ToList();
 List<User> list = engine.Select<User>().Where(x => selectedIds.Contains(x.Id)).ToList()
 ```
 
@@ -57,28 +50,66 @@ List<User> list = engine.Select<User>().Where(x => selectedIds.Contains(x.Id)).T
 
 Easy to use. You can do anything with one line :blush:
 
+### SELECT
+
 ```csharp
 Engine engine = new Engine(connectionString);
 
-// SELECT
 List<User> users = engine.Select<User>().ToList();
+```
+
+### WHERE
+
+```csharp
+Engine engine = new Engine(connectionString);
 
 List<User> users = engine.Select<User>().Where(x => x.Id > 5 && x.Role == "admin" && x.CreatedDate < dateTime && x.Active == true).ToList();
 List<User> users = engine.Select<User>().Where(x => x.Name.Contains("foo")).ToList();
 List<User> users = engine.Select<User>().Where(x => x.Name.StartsWith("foo")).ToList();
 List<User> users = engine.Select<User>().Where(x => x.Name.EndsWith("foo")).ToList();
+```
 
-// INSERT
+### OrderBy and OrderByDescending
+
+```csharp
+Engine engine = new Engine(connectionString);
+
+List<User> users = engine.Select<User>().OrderBy(x => x.Name).ToList();
+List<User> users = engine.Select<User>().OrderBy(x => x.Name).OrderByDescending(x => x.Surname).ToList();
+```
+
+### INSERT
+
+You can get inserted id after call insert method.
+
+```csharp
+Engine engine = new Engine(connectionString);
+
 engine.Insert(model);
-int insertedId = model.Id; // You can get insrted id after insert
+int insertedId = model.Id;
+```
 
-// UPDATE
+### UPDATE
+
+```csharp
+Engine engine = new Engine(connectionString);
+
 int affectedRows = engine.Update(model);
+```
 
-// DELETE
+### DELETE
+
+```csharp
+Engine engine = new Engine(connectionString);
+
 int affectedRows = engine.Delete(model);
+```
 
-// ** TRANSACTIONS **
+### TRANSACTIONS
+
+```csharp
+Engine engine = new Engine(connectionString);
+
 using (Transaction transaction = engine.BeginTransaction())
 {
     try

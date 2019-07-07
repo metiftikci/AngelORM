@@ -28,7 +28,12 @@ namespace AngelORM
 
         public List<T> ToList()
         {
-            DataTable dataTable = _engine.ExecuteDataTable(_selectQuery + _where);
+            string query = _selectQuery;
+
+            if (_where != null) query += _where;
+            if (_orderBy != null) query += _orderBy;
+
+            DataTable dataTable = _engine.ExecuteDataTable(query);
 
             return _utils.ConvertDataTableToList<T>(dataTable);
         }
@@ -48,6 +53,28 @@ WHERE " + expressionResolver.ResolveWhere(predicate);
 
         public SelectOperation<T> OrderBy<TResult>(Expression<Func<T, TResult>> columnSelector)
         {
+            ExpressionResolver expressionResolver = new ExpressionResolver();
+            string columnName = expressionResolver.ResolveOrderBy<T, TResult>(columnSelector);
+
+            if (_orderBy == null)
+            {
+                _orderBy = @"
+ORDER BY " + columnName;
+            }
+            else
+            {
+                _orderBy += ", " + columnName;
+            }
+
+            return this;
+        }
+
+        public SelectOperation<T> OrderByDescending<TResult>(Expression<Func<T, TResult>> columnSelector)
+        {
+            OrderBy(columnSelector);
+
+            _orderBy += " DESC";
+            
             return this;
         }
     }

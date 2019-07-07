@@ -114,6 +114,78 @@ namespace AngelORM.Tests
             Assert.NotEqual(lastUser.Id, lastUser2.Id);
         }
 
+        [Fact]
+        public void OrderBy_with_one_column()
+        {
+            List<User> users = _engine.Select<User>().ToList();
+
+            if (users.Count == 0)
+            {
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+            }
+
+            List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ToList();
+            List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).ToList();
+
+            Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+
+            for (int i = 0; i < orderedByLinq.Count; i++)
+            {
+                Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+            }
+        }
+
+        [Fact]
+        public void OrderBy_with_multiple_column()
+        {
+            List<User> users = _engine.Select<User>().ToList();
+
+            if (users.Count == 0)
+            {
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+            }
+
+            List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
+            List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
+
+            Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+
+            for (int i = 0; i < orderedByLinq.Count; i++)
+            {
+                Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+            }
+        }
+
+        [Fact]
+        public void OrderBy_with_multiple_column_and_multiple_order_type()
+        {
+            List<User> users = _engine.Select<User>().ToList();
+
+            if (users.Count == 0)
+            {
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+                AddNewUser();
+            }
+
+            List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
+            List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
+
+            Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+
+            for (int i = 0; i < orderedByLinq.Count; i++)
+            {
+                Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+            }
+        }
+
         private void AddNewUser()
         {
             User user = new User();
