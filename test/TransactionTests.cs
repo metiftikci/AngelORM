@@ -84,7 +84,7 @@ namespace AngelORM.Tests
 
                     didRollback = true;
 
-                    user = _engine.Select<User>().Where(x => x.Id == user.Id).ToList()[1];
+                    user = _engine.Select<User>().Where(x => x.Id == user.Id).ToList()[0];
 
                     Assert.Equal(temp, user.Name);
                 }

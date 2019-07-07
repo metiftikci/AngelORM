@@ -209,7 +209,7 @@ namespace AngelORM.Tests
                     UserCreator.CreateNewUserWithName(_engine, "D");
                     UserCreator.CreateNewUserWithName(_engine, "B");
 
-                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ThenByDescending(x => x.Id).ToList();
+                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ThenBy(x => x.Id).ToList();
                     List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
 
                     Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
