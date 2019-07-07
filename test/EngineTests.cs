@@ -8,7 +8,7 @@ namespace AngelORM.Tests
 {
     public class EngineTests
     {
-        public const string CS = "Server=(local)\\SQL2014;Database=AngelORM;User ID=sa;Password=Password12!";
+        public const string CS = "Server=.\\RST;Database=AngelORM;User ID=sa;Password=123456";
 
         private Engine _engine = new Engine(CS);
 
@@ -117,72 +117,99 @@ namespace AngelORM.Tests
         [Fact]
         public void OrderBy_with_one_column()
         {
-            List<User> users = _engine.Select<User>().ToList();
-
-            if (users.Count == 0)
+            using (Transaction transaction = _engine.BeginTransaction())
             {
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-            }
+                try
+                {
+                    _engine.ExecuteNonQuery("TRUNCATE TABLE [User]");
 
-            List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ToList();
-            List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).ToList();
+                    AddNewUserWithName("C");
+                    AddNewUserWithName("A");
+                    AddNewUserWithName("D");
+                    AddNewUserWithName("B");
 
-            Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ToList();
+                    List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).ToList();
 
-            for (int i = 0; i < orderedByLinq.Count; i++)
-            {
-                Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+                    Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+
+                    for (int i = 0; i < orderedByLinq.Count; i++)
+                    {
+                        Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+                    }
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                }
             }
         }
 
         [Fact]
         public void OrderBy_with_multiple_column()
         {
-            List<User> users = _engine.Select<User>().ToList();
-
-            if (users.Count == 0)
+            using (Transaction transaction = _engine.BeginTransaction())
             {
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-            }
+                try
+                {
+                    _engine.ExecuteNonQuery("TRUNCATE TABLE [User]");
 
-            List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
-            List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
+                    AddNewUserWithName("C");
+                    AddNewUserWithName("A");
+                    AddNewUserWithName("D");
+                    AddNewUserWithName("B");
 
-            Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
+                    List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
 
-            for (int i = 0; i < orderedByLinq.Count; i++)
-            {
-                Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+                    Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+
+                    for (int i = 0; i < orderedByLinq.Count; i++)
+                    {
+                        Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+                    }
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                }
             }
         }
 
         [Fact]
         public void OrderBy_with_multiple_column_and_multiple_order_type()
         {
-            List<User> users = _engine.Select<User>().ToList();
-
-            if (users.Count == 0)
+            using (Transaction transaction = _engine.BeginTransaction())
             {
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-            }
+                try
+                {
+                    _engine.ExecuteNonQuery("TRUNCATE TABLE [User]");
 
-            List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
-            List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
+                    AddNewUserWithName("C");
+                    AddNewUserWithName("A");
+                    AddNewUserWithName("D");
+                    AddNewUserWithName("B");
 
-            Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
+                    List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
 
-            for (int i = 0; i < orderedByLinq.Count; i++)
-            {
-                Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+                    Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
+
+                    for (int i = 0; i < orderedByLinq.Count; i++)
+                    {
+                        Assert.Equal(orderedByLinq[i].Id, orderedByAngelORM[i].Id);
+                    }
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                }
             }
         }
 
@@ -190,6 +217,19 @@ namespace AngelORM.Tests
         {
             User user = new User();
             user.Name = "Foo";
+            user.Username = Guid.NewGuid().ToString();
+            user.Password = "qwerty";
+            user.Password = "baz@qux.com";
+            user.CreatedDate = DateTime.Now;
+            user.Active = true;
+
+            _engine.Insert(user);
+        }
+
+        private void AddNewUserWithName(string name)
+        {
+            User user = new User();
+            user.Name = name;
             user.Username = Guid.NewGuid().ToString();
             user.Password = "qwerty";
             user.Password = "baz@qux.com";
