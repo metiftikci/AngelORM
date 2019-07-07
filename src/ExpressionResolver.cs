@@ -5,7 +5,7 @@ namespace AngelORM
 {
     public class ExpressionResolver
     {
-        public string Resolve<T>(Expression<Func<T, bool>> predicate)
+        public string ResolveWhere<T>(Expression<Func<T, bool>> predicate)
             where T : class
         {
             ExpressionVisitor<T> visitor = new ExpressionVisitor<T>();

@@ -13,6 +13,7 @@ namespace AngelORM
         private string _selectQuery;
 
         private string _where;
+        private string _orderBy;
 
         public SelectOperation(Engine engine)
         {
@@ -40,12 +41,12 @@ namespace AngelORM
             ExpressionResolver expressionResolver = new ExpressionResolver();
 
             _where = @"
-WHERE " + expressionResolver.Resolve(predicate);
+WHERE " + expressionResolver.ResolveWhere(predicate);
 
             return this;
         }
 
-        public SelectOperation<T> OrderBy<TResult>(Expression<Func<T, TResult>> qwe)
+        public SelectOperation<T> OrderBy<TResult>(Expression<Func<T, TResult>> columnSelector)
         {
             return this;
         }
