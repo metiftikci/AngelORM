@@ -21,7 +21,7 @@ namespace AngelORM.Tests
         [Fact]
         public void SelectWhere_property_equals_to_string_constant()
         {
-            List<User> users = _engine.Select<User>().Where(x => x.Name == "Muhammed").ToList();
+            List<User> users = _engine.Select<User>().Where(x => x.Name == "Angel").ToList();
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace AngelORM.Tests
             user.Name = "foo";
             user.Username = "bar";
             user.Password = "qwerty";
-            user.Password = "baz@qux.com";
+            user.Email = "baz@qux.com";
             user.CreatedDate = DateTime.Now;
             user.Active = true;
 
@@ -53,7 +53,7 @@ namespace AngelORM.Tests
             user.Name = "foo";
             user.Username = "bar";
             user.Password = "qwerty";
-            user.Password = "baz@qux.com";
+            user.Email = "baz@qux.com";
             user.CreatedDate = DateTime.Now;
             user.Active = true;
 
@@ -69,10 +69,10 @@ namespace AngelORM.Tests
             
             if (users.Count == 0)
             {
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
+                AddNewUserWithName("Name3");
+                AddNewUserWithName("Name1");
+                AddNewUserWithName("Name4");
+                AddNewUserWithName("Name2");
             }
 
             users = _engine.Select<User>().ToList();
@@ -96,10 +96,10 @@ namespace AngelORM.Tests
             
             if (users.Count == 0)
             {
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
-                AddNewUser();
+                AddNewUserWithName("Name3");
+                AddNewUserWithName("Name1");
+                AddNewUserWithName("Name4");
+                AddNewUserWithName("Name2");
             }
 
             users = _engine.Select<User>().ToList();
@@ -219,7 +219,7 @@ namespace AngelORM.Tests
             user.Name = "Foo";
             user.Username = Guid.NewGuid().ToString();
             user.Password = "qwerty";
-            user.Password = "baz@qux.com";
+            user.Email = "baz@qux.com";
             user.CreatedDate = DateTime.Now;
             user.Active = true;
 
@@ -232,7 +232,7 @@ namespace AngelORM.Tests
             user.Name = name;
             user.Username = Guid.NewGuid().ToString();
             user.Password = "qwerty";
-            user.Password = "baz@qux.com";
+            user.Email = "baz@qux.com";
             user.CreatedDate = DateTime.Now;
             user.Active = true;
 
