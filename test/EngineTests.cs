@@ -1,3 +1,4 @@
+using AngelORM.Tests.Core;
 using AngelORM.Tests.Models;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,7 @@ namespace AngelORM.Tests
 {
     public class EngineTests
     {
-        public const string CS = "Server=(local)\\SQL2014;Database=AngelORM;User ID=sa;Password=Password12!";
-
-        private Engine _engine = new Engine(CS);
+        private Engine _engine = new Engine(Settings.DatabaseConnectionString);
 
         [Fact]
         public void Select_not_throws_exception()
@@ -33,85 +32,136 @@ namespace AngelORM.Tests
         [Fact]
         public void InsertTest()
         {
-            User user = new User();
-            user.Name = "foo";
-            user.Username = "bar";
-            user.Password = "qwerty";
-            user.Email = "baz@qux.com";
-            user.CreatedDate = DateTime.Now;
-            user.Active = true;
+            using (Transaction transaction = _engine.BeginTransaction())
+            {
+                try
+                {
+                    User user = new User();
+                    user.Name = "foo";
+                    user.Username = "bar";
+                    user.Password = "qwerty";
+                    user.Email = "baz@qux.com";
+                    user.CreatedDate = DateTime.Now;
+                    user.Active = true;
 
-            _engine.Insert(user);
+                    _engine.Insert(user);
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+
+                    throw;
+                }
+            }
         }
 
         [Fact]
         public void InsertTest_inserted_id_assings_to_id_property()
         {
-            int lastUserId = (int)(decimal)_engine.ExecuteScalar("SELECT IDENT_CURRENT('User')");
+            using (Transaction transaction = _engine.BeginTransaction())
+            {
+                try
+                {
+                    UserCreator.CreateNewUserWithName(_engine, "UpdateTest");
 
-            User user = new User();
-            user.Name = "foo";
-            user.Username = "bar";
-            user.Password = "qwerty";
-            user.Email = "baz@qux.com";
-            user.CreatedDate = DateTime.Now;
-            user.Active = true;
+                    int lastUserId = (int)(decimal)_engine.ExecuteScalar("SELECT IDENT_CURRENT('User')");
 
-            _engine.Insert(user);
+                    User user = new User();
+                    user.Name = "foo";
+                    user.Username = "bar";
+                    user.Password = "qwerty";
+                    user.Email = "baz@qux.com";
+                    user.CreatedDate = DateTime.Now;
+                    user.Active = true;
 
-            Assert.Equal(lastUserId + 1, user.Id);
+                    _engine.Insert(user);
+
+                    Assert.Equal(lastUserId + 1, user.Id);
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+
+                    throw;
+                }
+            }
         }
 
         [Fact]
         public void UpdateTest()
         {
-            List<User> users = _engine.Select<User>().ToList();
-            
-            if (users.Count == 0)
+            using (Transaction transaction = _engine.BeginTransaction())
             {
-                AddNewUserWithName("Name3");
-                AddNewUserWithName("Name1");
-                AddNewUserWithName("Name4");
-                AddNewUserWithName("Name2");
+                try
+                {
+                    List<User> users = _engine.Select<User>().ToList();
+                    
+                    if (users.Count == 0)
+                    {
+                        UserCreator.CreateNewUserWithName(_engine, "Name3");
+                        UserCreator.CreateNewUserWithName(_engine, "Name1");
+                        UserCreator.CreateNewUserWithName(_engine, "Name4");
+                        UserCreator.CreateNewUserWithName(_engine, "Name2");
+                    }
+
+                    users = _engine.Select<User>().ToList();
+
+                    User lastUser = users.Last();
+
+                    lastUser.Username = Guid.NewGuid().ToString();
+
+                    _engine.Update(lastUser);
+                    
+                    List<User> users2 = _engine.Select<User>().ToList();
+                    User lastUser2 = users2.Last();
+
+                    Assert.Equal(lastUser.Username, lastUser2.Username);
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+
+                    throw;
+                }
             }
-
-            users = _engine.Select<User>().ToList();
-
-            User lastUser = users.Last();
-
-            lastUser.Username = Guid.NewGuid().ToString();
-
-            _engine.Update(lastUser);
-            
-            List<User> users2 = _engine.Select<User>().ToList();
-            User lastUser2 = users2.Last();
-
-            Assert.Equal(lastUser.Username, lastUser2.Username);
         }
 
         [Fact]
         public void DeleteTest()
         {
-            List<User> users = _engine.Select<User>().ToList();
-            
-            if (users.Count == 0)
+            using (Transaction transaction = _engine.BeginTransaction())
             {
-                AddNewUserWithName("Name3");
-                AddNewUserWithName("Name1");
-                AddNewUserWithName("Name4");
-                AddNewUserWithName("Name2");
+                try
+                {
+                    UserCreator.CreateNewUserWithName(_engine, "Name1");
+                    UserCreator.CreateNewUserWithName(_engine, "Name2");
+
+                    List<User> users = _engine.Select<User>().ToList();
+                    
+                    User lastUser = users.Last();
+
+                    _engine.Delete(lastUser);
+                    
+                    List<User> users2 = _engine.Select<User>().ToList();
+                    User lastUser2 = users2.Last();
+
+                    Assert.NotEqual(lastUser.Id, lastUser2.Id);
+
+                    transaction.Rollback();
+                }
+                catch
+                {
+                    transaction.Rollback();
+
+                    throw;
+                }
             }
-
-            users = _engine.Select<User>().ToList();
-            
-            User lastUser = users.Last();
-
-            _engine.Delete(lastUser);
-            
-            List<User> users2 = _engine.Select<User>().ToList();
-            User lastUser2 = users2.Last();
-
-            Assert.NotEqual(lastUser.Id, lastUser2.Id);
         }
 
         [Fact]
@@ -121,12 +171,10 @@ namespace AngelORM.Tests
             {
                 try
                 {
-                    _engine.ExecuteNonQuery("TRUNCATE TABLE [User]");
-
-                    AddNewUserWithName("C");
-                    AddNewUserWithName("A");
-                    AddNewUserWithName("D");
-                    AddNewUserWithName("B");
+                    UserCreator.CreateNewUserWithName(_engine, "C");
+                    UserCreator.CreateNewUserWithName(_engine, "A");
+                    UserCreator.CreateNewUserWithName(_engine, "D");
+                    UserCreator.CreateNewUserWithName(_engine, "B");
 
                     List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ToList();
                     List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).ToList();
@@ -143,6 +191,8 @@ namespace AngelORM.Tests
                 catch
                 {
                     transaction.Rollback();
+
+                    throw;
                 }
             }
         }
@@ -154,14 +204,12 @@ namespace AngelORM.Tests
             {
                 try
                 {
-                    _engine.ExecuteNonQuery("TRUNCATE TABLE [User]");
+                    UserCreator.CreateNewUserWithName(_engine, "C");
+                    UserCreator.CreateNewUserWithName(_engine, "A");
+                    UserCreator.CreateNewUserWithName(_engine, "D");
+                    UserCreator.CreateNewUserWithName(_engine, "B");
 
-                    AddNewUserWithName("C");
-                    AddNewUserWithName("A");
-                    AddNewUserWithName("D");
-                    AddNewUserWithName("B");
-
-                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
+                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).ThenByDescending(x => x.Id).ToList();
                     List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderBy(x => x.Id).ToList();
 
                     Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
@@ -176,6 +224,8 @@ namespace AngelORM.Tests
                 catch
                 {
                     transaction.Rollback();
+
+                    throw;
                 }
             }
         }
@@ -187,15 +237,13 @@ namespace AngelORM.Tests
             {
                 try
                 {
-                    _engine.ExecuteNonQuery("TRUNCATE TABLE [User]");
+                    UserCreator.CreateNewUserWithName(_engine, "C");
+                    UserCreator.CreateNewUserWithName(_engine, "A");
+                    UserCreator.CreateNewUserWithName(_engine, "D");
+                    UserCreator.CreateNewUserWithName(_engine, "B");
 
-                    AddNewUserWithName("C");
-                    AddNewUserWithName("A");
-                    AddNewUserWithName("D");
-                    AddNewUserWithName("B");
-
-                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
-                    List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Username).OrderByDescending(x => x.Id).ToList();
+                    List<User> orderedByLinq = _engine.Select<User>().ToList().OrderBy(x => x.Name).ThenByDescending(x => x.Id).ToList();
+                    List<User> orderedByAngelORM = _engine.Select<User>().OrderBy(x => x.Name).OrderByDescending(x => x.Id).ToList();
 
                     Assert.Equal(orderedByLinq.Count, orderedByAngelORM.Count);
 
@@ -209,34 +257,10 @@ namespace AngelORM.Tests
                 catch
                 {
                     transaction.Rollback();
+
+                    throw;
                 }
             }
-        }
-
-        private void AddNewUser()
-        {
-            User user = new User();
-            user.Name = "Foo";
-            user.Username = Guid.NewGuid().ToString();
-            user.Password = "qwerty";
-            user.Email = "baz@qux.com";
-            user.CreatedDate = DateTime.Now;
-            user.Active = true;
-
-            _engine.Insert(user);
-        }
-
-        private void AddNewUserWithName(string name)
-        {
-            User user = new User();
-            user.Name = name;
-            user.Username = Guid.NewGuid().ToString();
-            user.Password = "qwerty";
-            user.Email = "baz@qux.com";
-            user.CreatedDate = DateTime.Now;
-            user.Active = true;
-
-            _engine.Insert(user);
         }
     }
 }

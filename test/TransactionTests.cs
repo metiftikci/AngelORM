@@ -1,4 +1,5 @@
 using AngelORM;
+using AngelORM.Tests.Core;
 using AngelORM.Tests.Models;
 using System;
 using System.Collections.Generic;
@@ -8,75 +9,94 @@ namespace AngelORM.Tests
 {
     public class TransactionTests
     {
-        private Engine _engine = new Engine(EngineTests.CS);
+        private Engine _engine = new Engine(Settings.DatabaseConnectionString);
 
         [Fact]
         public void Rollback_check_users_count()
         {
-            int id = 0;
-
             using (Transaction transaction = _engine.BeginTransaction())
             {
-                User user = new User();
-                user.Name = Guid.NewGuid().ToString();
-                user.Surname = "Foo";
-                user.Password = "Bar";
-                user.CreatedDate = DateTime.Now;
+                bool didRollback = false;
 
-                _engine.Insert(user);
-                Assert.NotEqual(0, user.Id);
+                try
+                {
+                    UserCreator.CreateNewUserWithName(_engine, "transaction test");
 
-                id = user.Id;
+                    int id = 0;
 
-                transaction.Rollback();
+                    User user = new User();
+                    user.Name = Guid.NewGuid().ToString();
+                    user.Surname = "Foo";
+                    user.Password = "Bar";
+                    user.CreatedDate = DateTime.Now;
+
+                    _engine.Insert(user);
+                    Assert.NotEqual(0, user.Id);
+
+                    id = user.Id;
+
+                    transaction.Rollback();
+
+                    didRollback = true;
+
+                    var users = _engine.Select<User>().Where(x => x.Id == id).ToList();
+
+                    int newCount = users.Count;
+
+                    Assert.Equal(0, newCount);
+                }
+                catch
+                {
+                    if (!didRollback)
+                    {
+                        transaction.Rollback();
+                    }
+
+                    throw;
+                }
             }
-
-            var users = _engine.Select<User>().Where(x => x.Id == id).ToList();
-
-            int newCount = users.Count;
-
-            Assert.Equal(0, newCount);
         }
 
         [Fact]
         public void Rollback_update()
         {
-            List<User> users = _engine.Select<User>().ToList();
-
-            User user = null;
-            
-            if (users.Count == 0)
-            {
-                user = new User();
-                user.Name = Guid.NewGuid().ToString();
-                user.CreatedDate = DateTime.Now;
-
-                _engine.Insert(user);
-                user.Id = 0;
-                _engine.Insert(user);
-                user.Id = 0;
-                _engine.Insert(user);
-                user.Id = 0;
-                _engine.Insert(user);
-            }
-
-            users = _engine.Select<User>().ToList();
-            user = users[0];
-
             using (Transaction transaction = _engine.BeginTransaction())
             {
-                string temp = user.Name;
-                user.Name = Guid.NewGuid().ToString();
+                bool didRollback = false;
 
-                int affectedRows = _engine.Update(user);
+                try
+                {
+                    UserCreator.CreateNewUserWithName(_engine, "User1");
+                    UserCreator.CreateNewUserWithName(_engine, "User2");
+                    UserCreator.CreateNewUserWithName(_engine, "User3");
+                    UserCreator.CreateNewUserWithName(_engine, "User4");
 
-                Assert.Equal(1, affectedRows);
+                    User user = _engine.Select<User>().ToList()[1];
 
-                transaction.Rollback();
+                    string temp = user.Name;
+                    user.Name = Guid.NewGuid().ToString();
 
-                user = _engine.Select<User>().Where(x => x.Id == user.Id).ToList()[0];
+                    int affectedRows = _engine.Update(user);
 
-                Assert.Equal(temp, user.Name);
+                    Assert.Equal(1, affectedRows);
+
+                    transaction.Rollback();
+
+                    didRollback = true;
+
+                    user = _engine.Select<User>().Where(x => x.Id == user.Id).ToList()[1];
+
+                    Assert.Equal(temp, user.Name);
+                }
+                catch
+                {
+                    if (!didRollback)
+                    {
+                        transaction.Rollback();
+                    }
+
+                    throw;
+                }
             }
         }
     }
