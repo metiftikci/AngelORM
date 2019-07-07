@@ -26,7 +26,7 @@ Basic and lightweight mssql operations framework.
 - **Update**: Update row with auto detected key.
 - **Delete**: Delete row with auto detected key.
 - **Transaction**: Begin, Commit and Rollback transaction.
-- **Raw Query**: Execute custom sql query.
+- **Raw Query**: Get raw query as string or execute raw query on database.
 
 ## Roadmap
 
@@ -127,6 +127,16 @@ using (Transaction transaction = engine.BeginTransaction())
         Log(ex);
     }
 }
+```
+
+### Raw Query
+
+```csharp
+Engine engine = new Engine(connectionString);
+
+string query = engine.Selet<User>().Where(x => x.Name == "foo").OrderBy(x => x.CreatedDate).ToSQL();
+
+engine.ExecuteNonQuery(query);
 ```
 
 You can look at [tests](test/EngineTests.cs) to see real examples.

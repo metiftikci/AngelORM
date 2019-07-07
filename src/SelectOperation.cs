@@ -26,12 +26,19 @@ namespace AngelORM
             _selectQuery = queryCreator.CreateSelectQuery<T>();
         }
 
-        public List<T> ToList()
+        public string ToSQL()
         {
             string query = _selectQuery;
 
             if (_where != null) query += _where;
             if (_orderBy != null) query += _orderBy;
+
+            return query;
+        }
+
+        public List<T> ToList()
+        {
+            string query = ToSQL();
 
             DataTable dataTable = _engine.ExecuteDataTable(query);
 
