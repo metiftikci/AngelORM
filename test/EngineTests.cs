@@ -7,6 +7,7 @@ using Xunit;
 
 namespace AngelORM.Tests
 {
+    [Collection("Transaction")]
     public class EngineTests
     {
         private Engine _engine = new Engine(Settings.DatabaseConnectionString);

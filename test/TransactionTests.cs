@@ -7,6 +7,7 @@ using Xunit;
 
 namespace AngelORM.Tests
 {
+    [Collection("Transaction")]
     public class TransactionTests
     {
         private Engine _engine = new Engine(Settings.DatabaseConnectionString);
@@ -84,9 +85,9 @@ namespace AngelORM.Tests
 
                     didRollback = true;
 
-                    user = _engine.Select<User>().Where(x => x.Id == user.Id).ToList()[0];
+                    int newCount = _engine.Select<User>().ToList().Count;
 
-                    Assert.Equal(temp, user.Name);
+                    Assert.Equal(0, newCount);
                 }
                 catch
                 {
