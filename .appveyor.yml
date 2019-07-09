@@ -5,6 +5,8 @@ services:
 before_build:
   - cmd: sqlcmd -S "(local)\SQL2014" -Q "Use [master]; CREATE DATABASE [AngelORM]"
   - cmd: sqlcmd -S "(local)\SQL2014" -Q "USE [AngelORM]; CREATE TABLE [dbo].[User]([Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL, [Name] [nvarchar](max) NULL, [Surname] [nvarchar](max) NULL, [Username] [nvarchar](max) NULL, [Password] [nvarchar](max) NULL, [Email] [nvarchar](max) NULL, [CreatedDate] [datetime] NOT NULL, [Active] [bit] NOT NULL)"
+  - cmd: sqlcmd -S "(local)\SQL2014" -Q "USE [AngelORM]; CREATE TABLE [dbo].[TableWithNullableColumn]([Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL, [Name] [nvarchar](max) NULL, [CreatedDate] [datetime] NULL)"
+  - cmd: sqlcmd -S "(local)\SQL2014" -Q "USE [AngelORM]; CREATE TABLE [dbo].[TableWithEnumColumn]([Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL, [Name] [nvarchar](max) NULL, [Status] [int] NOT NULL, [Mode] [smallint] NOT NULL)"
   - cmd: dotnet --version
   - cmd: dotnet restore
   - cmd: dotnet build

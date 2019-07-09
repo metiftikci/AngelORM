@@ -27,24 +27,16 @@ Basic and lightweight mssql operations framework.
 - **Delete**: Delete row with auto detected key.
 - **Transaction**: Begin, Commit and Rollback transaction.
 - **Raw Query**: Get raw query as string or execute raw query on database.
+- **Nullable Column**: Supports for `Nullable<T>` type column (ex: `public DateTime? ModifiedDate { get; set; }`)
+- **Enum Column**: Supports for `Enum` type column (ex: `public MyTypeStatus Status { get; set; }`)
 
 ## Roadmap
 
-- Add Nullable<T> column type feature.
-- Add enum column type feature.
+- Add OnQueryCreated method to SelectOperation.
 - Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
 - Implement data annotations to define table and column names.
-- Add OnQueryCreated method to SelectOperation.
 - Add CreateTable<T>, CreateTableIfNotExists<T> and MigrateTable<T> methods to Engine.
 - Validate model fetaure from data annotations on Insert and Update.
-
-## Work On
-
-Currently working on implement where feature with expression for int contains method.
-
-```csharp
-List<User> list = engine.Select<User>().Where(x => selectedIds.Contains(x.Id)).ToList()
-```
 
 ## Usage
 
