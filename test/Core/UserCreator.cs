@@ -1,5 +1,5 @@
-using System;
 using AngelORM.Tests.Models;
+using System;
 
 namespace AngelORM.Tests.Core
 {
