@@ -29,10 +29,10 @@ Basic and lightweight mssql operations framework.
 - **Raw Query**: Get raw query as string or execute raw query on database.
 - **Nullable Column**: Supports for `Nullable<T>` type column (ex: `public DateTime? ModifiedDate { get; set; }`)
 - **Enum Column**: Supports for `Enum` type column (ex: `public MyTypeStatus Status { get; set; }`)
+- **Created Query Feedback**: You can use or manupilate created query with `OnQueryExecuting` method before execute.
 
 ## Roadmap
 
-- Add OnQueryCreated method to SelectOperation.
 - Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
 - Implement data annotations to define table and column names.
 - Add CreateTable<T>, CreateTableIfNotExists<T> and MigrateTable<T> methods to Engine.
@@ -129,6 +129,17 @@ Engine engine = new Engine(connectionString);
 string query = engine.Selet<User>().Where(x => x.Name == "foo").OrderBy(x => x.CreatedDate).ToSQL();
 
 engine.ExecuteNonQuery(query);
+```
+
+### Created Query Feedback
+
+```csharp
+Engine engine = new Engine(connectionString);
+
+List<User> users = engine
+    .Select<User>()
+    .OnActionExecutin(x => x + " WHERE Id << 5 <> 0")
+    .ToList();
 ```
 
 You can look at [tests](test/EngineTests.cs) to see real examples.

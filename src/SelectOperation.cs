@@ -15,6 +15,8 @@ namespace AngelORM
         private string _where;
         private string _orderBy;
 
+        private Func<string, string> _onQueryExecuting;
+
         public SelectOperation(Engine engine)
         {
             if (engine == null) throw new ArgumentNullException(nameof(engine));
@@ -39,6 +41,11 @@ namespace AngelORM
         public List<T> ToList()
         {
             string query = ToSQL();
+
+            if (_onQueryExecuting != null)
+            {
+                query = _onQueryExecuting(query);
+            }
 
             DataTable dataTable = _engine.ExecuteDataTable(query);
 
@@ -82,6 +89,15 @@ ORDER BY " + columnName;
 
             _orderBy += " DESC";
             
+            return this;
+        }
+
+        public SelectOperation<T> OnQueryExecuting(Func<string, string> action)
+        {
+            if (_onQueryExecuting != null) throw new AngelORMException("OnQueryExecuting function is alread set.");
+
+            _onQueryExecuting = action;
+
             return this;
         }
     }
