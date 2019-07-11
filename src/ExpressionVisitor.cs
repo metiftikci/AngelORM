@@ -137,7 +137,7 @@ namespace AngelORM
 
         private string VisitUnary(UnaryExpression expression)
         {
-            if (expression.NodeType == ExpressionType.Convert && expression.Operand.NodeType == ExpressionType.MemberAccess)
+            if ((expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked) && expression.Operand.NodeType == ExpressionType.MemberAccess)
             {
                 return VisitMember((MemberExpression)expression.Operand);
             }
@@ -159,6 +159,10 @@ namespace AngelORM
             if (obj is string)
             {
                 return $"'{((string)obj).Replace("'", "''")}'";
+            }
+            else if (obj is short)
+            {
+                return ((short)obj).ToString();
             }
             else if (obj is int)
             {
