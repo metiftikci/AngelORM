@@ -10,7 +10,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/jaqra/AngelORM/master/assets/logo.jpg</PackageIconUrl>
 
     <Authors>jaqra</Authors>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <Copyright>2019</Copyright>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

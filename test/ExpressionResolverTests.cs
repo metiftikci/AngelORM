@@ -1,5 +1,6 @@
 using AngelORM.Tests.Models;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Xunit;
 
@@ -148,6 +149,24 @@ namespace AngelORM.Tests
             string result = _resolver.ResolveOrderBy<User, string>(x => x.Name);
 
             Assert.Equal("[Name]", result);
+        }
+
+        [Fact]
+        public void ResolveWhere_int_contains_column()
+        {
+            int[] ids = new int[] { 1, 2, 3, 4, 5 };
+
+            string result = _resolver.ResolveWhere<User>(x => ids.Contains(x.Id));
+
+            Assert.Equal("([Id] IN (1,2,3,4,5))", result);
+        }
+
+        [Fact]
+        public void ResolveWhere_int_contains_int_should_throw()
+        {
+            int[] ids = new int[] { 1, 2, 3, 4, 5 };
+
+            Assert.Throws<UnsupportedException>(() => _resolver.ResolveWhere<User>(x => ids.Contains(5)));
         }
     }
 }

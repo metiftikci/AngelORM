@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -114,6 +115,18 @@ namespace AngelORM
 
                 return $"({Visit(expression.Object)} LIKE '%{value}')";
             }
+            else if (expression.Method == typeof(Enumerable).GetMethods().Where(x => x.Name == "Contains" && x.GetParameters().Length == 2).First().MakeGenericMethod(typeof(int)))
+            {
+                if (expression.Arguments[1].NodeType == ExpressionType.MemberAccess && ((MemberExpression)expression.Arguments[1]).Expression.NodeType == ExpressionType.Parameter)
+                {
+                    MemberExpression meValues = (MemberExpression)expression.Arguments[0];
+                    MemberExpression meColumn = (MemberExpression)expression.Arguments[1];
+
+                    return $"({Visit(meColumn)} IN ({Visit(meValues)}))";
+                }
+
+                throw new UnsupportedException("Contains methods is used wrong. Do you mean: arr.Contains(x.Id)");
+            }
 
             throw new UnsupportedException($"Unsupported method call: {expression.Method.Name}");
         }
@@ -146,6 +159,10 @@ namespace AngelORM
             else if (obj is bool)
             {
                 return (bool)obj ? "1" : "0";
+            }
+            else if (obj is IEnumerable<int>)
+            {
+                return string.Join(",", (IEnumerable<int>)obj);
             }
             else
             {

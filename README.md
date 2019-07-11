@@ -33,7 +33,6 @@ Basic and lightweight mssql operations framework.
 
 ## Roadmap
 
-- Allow Enumerable.Contains method in where expression to generate query like '[Column] IN (1,2,3,4)'.
 - Implement data annotations to define table and column names.
 - Add CreateTable<T>, CreateTableIfNotExists<T> and MigrateTable<T> methods to Engine.
 - Validate model fetaure from data annotations on Insert and Update.
@@ -59,6 +58,10 @@ List<User> users = engine.Select<User>().Where(x => x.Id > 5 && x.Role == "admin
 List<User> users = engine.Select<User>().Where(x => x.Name.Contains("foo")).ToList();
 List<User> users = engine.Select<User>().Where(x => x.Name.StartsWith("foo")).ToList();
 List<User> users = engine.Select<User>().Where(x => x.Name.EndsWith("foo")).ToList();
+
+int[] refs = new int[] { 1, 2, 3, 4, 5 };
+
+List<User> users = engine.Select<User>().Where(x => refs.Contains(x.Id)).ToList();
 ```
 
 ### OrderBy and OrderByDescending
@@ -138,8 +141,6 @@ Engine engine = new Engine(connectionString);
 
 List<User> users = engine
     .Select<User>()
-    .OnActionExecutin(x => x + " WHERE Id << 5 <> 0")
+    .OnQueryExecutin(x => x + " WHERE Id << 5 <> 0")
     .ToList();
 ```
-
-You can look at [tests](test/EngineTests.cs) to see real examples.
