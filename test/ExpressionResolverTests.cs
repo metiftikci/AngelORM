@@ -168,5 +168,29 @@ namespace AngelORM.Tests
 
             Assert.Throws<UnsupportedException>(() => _resolver.ResolveWhere<User>(x => ids.Contains(5)));
         }
+
+        [Fact]
+        public void ResolveWhere_enum_column_equals_to_enum()
+        {
+            string result = _resolver.ResolveWhere<TableWithEnumColumn>(x => x.Mode == TableWithEnumColumnMode.Baz);
+
+            Assert.Equal("([Mode] = 2)", result);
+        }
+
+        [Fact]
+        public void ResolveWhere_enum_equals_to_enum_column()
+        {
+            string result = _resolver.ResolveWhere<TableWithEnumColumn>(x => TableWithEnumColumnMode.Baz == x.Mode);
+
+            Assert.Equal("(2 = [Mode])", result);
+        }
+
+        [Fact]
+        public void ResolveWhere_enum_equals_cast_int()
+        {
+            string result = _resolver.ResolveWhere<TableWithEnumColumn>(x => x.Mode == (TableWithEnumColumnMode)2);
+
+            Assert.Equal("([Mode] = 2)", result);
+        }
     }
 }

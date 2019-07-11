@@ -36,6 +36,10 @@ namespace AngelORM
             {
                 return VisitMethodCall((MethodCallExpression)expression);
             }
+            else if (expression is UnaryExpression)
+            {
+                return VisitUnary((UnaryExpression)expression);
+            }
             else
             {
                 throw new NotImplementedException($"Unsupported expression type: {expression.GetType().Name}");
@@ -129,6 +133,16 @@ namespace AngelORM
             }
 
             throw new UnsupportedException($"Unsupported method call: {expression.Method.Name}");
+        }
+
+        private string VisitUnary(UnaryExpression expression)
+        {
+            if (expression.NodeType == ExpressionType.Convert && expression.Operand.NodeType == ExpressionType.MemberAccess)
+            {
+                return VisitMember((MemberExpression)expression.Operand);
+            }
+
+            throw new UnsupportedException($"Unsupported expression: {expression}");
         }
 
         private string GetValue(MemberExpression expression)
