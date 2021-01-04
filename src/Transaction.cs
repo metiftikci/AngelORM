@@ -34,6 +34,7 @@ namespace AngelORM
             using (SqlCommand command = new SqlCommand(query, _connection))
             {
                 command.Transaction = _transaction;
+                command.CommandTimeout = _engine.CommandTimeout;
 
                 if (parameters != null)
                 {
@@ -54,6 +55,7 @@ namespace AngelORM
             using (SqlCommand command = new SqlCommand(query, _connection))
             {
                 command.Transaction = _transaction;
+                command.CommandTimeout = _engine.CommandTimeout;
 
                 if (parameters != null)
                 {
@@ -74,6 +76,7 @@ namespace AngelORM
             using (SqlCommand command = new SqlCommand(query, _connection))
             {
                 command.Transaction = _transaction;
+                command.CommandTimeout = _engine.CommandTimeout;
 
                 if (parameters != null)
                 {

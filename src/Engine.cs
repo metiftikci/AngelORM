@@ -7,6 +7,7 @@ namespace AngelORM
     public class Engine
     {
         public bool HasTransaction => _transaction != null;
+        public int CommandTimeout { get; set; } = 30;
 
         private string _connectionString;
         private Transaction _transaction;
@@ -92,6 +93,7 @@ namespace AngelORM
                 {
                     command.Connection = connection;
                     command.CommandText = query;
+                    command.CommandTimeout = CommandTimeout;
 
                     if (parameters != null)
                     {
@@ -118,6 +120,7 @@ namespace AngelORM
                 {
                     command.Connection = connection;
                     command.CommandText = query;
+                    command.CommandTimeout = CommandTimeout;
 
                     if (parameters != null)
                     {
@@ -144,6 +147,7 @@ namespace AngelORM
                 {
                     command.Connection = connection;
                     command.CommandText = query;
+                    command.CommandTimeout = CommandTimeout;
 
                     if (parameters != null)
                     {
